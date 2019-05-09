@@ -12,14 +12,15 @@
  ;; If there is more than one, they won't work right.
  '(c-default-style
    (quote
-    ((c-mode . "stroustrup")
-     (c++-mode . "stroustrup")
-     (java-mode . "java")
-     (awk-mode . "awk")
-     (other . "gnu"))))
+	((c-mode . "stroustrup")
+	 (c++-mode . "stroustrup")
+	 (java-mode . "java")
+	 (awk-mode . "awk")
+	 (other . "gnu"))))
  '(custom-enabled-themes (quote (misterioso)))
  '(font-use-system-font t)
- '(package-selected-packages (quote (magit)))
+ '(package-selected-packages (quote (helm-gtags markdown-mode magit)))
+ '(tab-width 4)
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -37,16 +38,31 @@
 (package-initialize)
 
 ;;; gtags
-(autoload 'gtags-mode "gtags" "" t)
-(setq gtags-mode-hook
-      '(lambda ()
-         (local-set-key "\M-t" 'gtags-find-tag)
-         (local-set-key "\M-r" 'gtags-find-rtag)
-         (local-set-key "\M-s" 'gtags-find-symbol)
-         (local-set-key "\C-t" 'gtags-pop-stack)
-         ))
-(add-hook 'c-mode-common-hook
-          '(lambda()
-             (gtags-mode 1)
-             (gtags-make-complete-list)
-             ))
+;; (autoload 'gtags-mode "gtags" "" t)
+;; (setq gtags-mode-hook
+;;       '(lambda ()
+;;          (local-set-key "\M-t" 'gtags-find-tag)
+;;          (local-set-key "\M-r" 'gtags-find-rtag)
+;;          (local-set-key "\M-s" 'gtags-find-symbol)
+;;          (local-set-key "\C-t" 'gtags-pop-stack)
+;;          ))
+;; (add-hook 'c-mode-common-hook
+;;           '(lambda()
+;;              (gtags-mode 1)
+;;              (gtags-make-complete-list)
+;;              ))
+;;; helm-gtags
+(require 'helm-config)
+(require 'helm-gtags)
+
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'sh-mode-hook 'helm-gtags-mode)
+
+;; key bindings
+(add-hook 'helm-gtags-mode-hook
+	  '(lambda ()
+	     (local-set-key (kbd "M-t") 'helm-gtags-find-tag)
+	     (local-set-key (kbd "M-r") 'helm-gtags-find-rtag)
+	     (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)
+	     (local-set-key (kbd "C-t") 'helm-gtags-pop-stack)))
